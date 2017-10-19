@@ -5,15 +5,30 @@
       <meta charset="UTF-8">
       <title>Calculator</title>
       <link href="design.css" rel="stylesheet">
-      <script src='jquery-3.1.1.min.js'></script>
+
 
   </head>
 
   <body>
-    <div id="title">Calculator</div>
-    
-    <div id="calc-box"></div>
+    <div id="canvas">
+      <div id="title">Calculator</div>
 
+      <div id="calc-box">
+        <div id="output"> </div>
+      </div>
+    </div>
+
+
+    <div class="text-area">
+      <div id="analysis"></div>
+    </div>
+
+    <div class="text-area">
+      This is placeholder text for stat analysis.
+    </div>
+
+    <!-- always keep on the bottom or script will not find
+    what comes after this point -->
     <script type="text/javascript" src="app.js"> </script>
   </body>
 
