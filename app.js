@@ -37,7 +37,8 @@ function Character(name, phyAtt, magAtt) {
   this.magicAttack = magAtt;
 }
 
-function Enemy(phyDef, magDef) {
+function Enemy(name, phyDef, magDef) {
+  this.name = name;
   this.physicalDefense = phyDef;
   this.magicDefense = magDef;
 }
@@ -52,9 +53,6 @@ function attack(attacker, target) {
   if(attacker.physicalAttack > attacker.magicAttack) {
     attackAtk = attacker.physicalAttack;
     defenderDef = target.physicalDefense; // set corresponding defense value of defender
-  } else if (attacker.physicalAttack == attacker.magicAttack) {
-    attackAtk = attacker.physicalAttack;
-    defenderDef = target.physicalDefense; // if phys and mag attack the same just go with phys
   } else {
     attackAtk = attacker.magicAttack;
     defenderDef = target.magicDefense; // set correpsonding defense value of defender
@@ -74,13 +72,10 @@ function attackLowest(attacker, target) {
   var attackAtk; // attacker's chosen damage
   var defenderDef; // defender's defense matching attacker's chosen type
 
-  // choosing lowest defense
-  if(target.phyDef < target.magDef) {
+  // choosing lowest defense  ~~ var qyburn = new Enemy("Qyburn", 120, 238);
+  if(target.physicalDefense < target.magicDefense) {
     attackAtk = attacker.physicalAttack;
     defenderDef = target.physicalDefense; // set corresponding defense value of defender
-  } else if (target.phyDef > target.magDef) {
-    attackAtk = attacker.physicalAttack;
-    defenderDef = target.physicalDefense; // if phys and mag attack the same just go with phys
   } else {
     attackAtk = attacker.magicAttack;
     defenderDef = target.magicDefense; // set correpsonding defense value of defender
@@ -95,21 +90,25 @@ function attackLowest(attacker, target) {
 
 }
 
-// character1 always one element type, character2 always hybrid
+// character1 always one attack type, character2 always hybrid
 function efficiencyCompare(character1, character2, target) {
-  var fight1Res = attack(character1, target);
-  var fight2Res = attackLowest(character2, target);
+  var fight1Res = attack(character1, target); // character 1 focuses on using it's own highest attack
+  var fight2Res = attackLowest(character2, target); // character 2 always focuses target's lowest defense
+
+  // temp test
+  console.log(character1.name + " took " + fight1Res + " hits to kill " + target.name);
+  console.log(character2.name + " took " + fight2Res + " hits to kill " + target.name);
 
   var result = 0;
   if(fight1Res > fight2Res) {
     result = (fight1Res - fight2Res)/fight1Res;
-    console.log(character2.name + " used less hits to remove armor.");
+    console.log(character2.name + " used " + 100*result + "% less hits to remove " + target.name + "'s armor.");
   } else if (fight1Res == fight2Res) {
     result = 1;
-    console.log("Efficiency was even");
+    console.log("Same number of attacks used to remove " + target.name + "'s armor.");
   } else {
       result = (fight2Res - fight1Res)/fight2Res;
-      console.log(character1.name + " used less hits to remove armor.");
+      console.log(character1.name + " used " + 100*result + "% less hits to remove " + target.name + "'s armor.");
   }
 
   return result;
@@ -118,16 +117,17 @@ function efficiencyCompare(character1, character2, target) {
 /* TESTING */
 
 // attackers
-var ned_stark = new Character("Eddark Stark", 10, 0);
+var ned_stark = new Character("Eddark Stark", 50, 0);
 var pyatPree = new Character("Pyat Pree", 0, 10);
-var bericDondarrion = new Character("Beric Dondarrion", 7, 7);
+var bericDondarrion = new Character("Beric Dondarrion", 41, 41);
 
 // targets
-var tyrion = new Enemy(100, 50);
-var qyburn = new Enemy(50, 100);
-var melisandre = new Enemy(0, 200);
-var thorosOfMyr = new Enemy(100, 100);
-var gregorClegane = new Enemy(200, 0);
+var tyrion = new Enemy("Tyrion", 100, 50);
+
+var qyburn = new Enemy("Qyburn", 120, 238);
+var melisandre = new Enemy("Melisandre", 135, 225);
+var thorosOfMyr = new Enemy("Thoros of Myr", 300, 120);
+var gregorClegane = new Enemy("Gregor Clegane", 220, 145);
 
 var result = attack(ned_stark, tyrion);
 var result2 = attackLowest(bericDondarrion, tyrion);
@@ -145,19 +145,18 @@ var analysisOut = document.getElementById('analysis');
 analysisOut.innerHTML = "Efficiency = " + efficiency_test_1;
 
 
+// log trials
+
+// full physical focus vs hybrid attacking varying ratios of physical/magical armor enemies
+console.log("Simulation Start");
+efficiencyCompare(ned_stark, bericDondarrion, qyburn);
+efficiencyCompare(ned_stark, bericDondarrion, melisandre);
+efficiencyCompare(ned_stark, bericDondarrion, thorosOfMyr);
+efficiencyCompare(ned_stark, bericDondarrion, gregorClegane);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+// bugs
 
 console.log();
